@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "description": "Buy groceries",
+    "state": "todo",
+    "createdAt": "2026-09-04T09:44:20.863Z",
+    "updateAt": "2026-09-04T09:44:20.863Z"
+  },
+  {
+    "id": 2,
+    "description": "Cook dinner",
+    "state": "in-progress",
+    "createdAt": "2026-09-04T10:00:32.067Z",
+    "updateAt": "2026-09-04T10:01:37.200Z"
+  },
+  {
+    "id": 3,
+    "description": "Buy groceries",
+    "state": "todo",
+    "createdAt": "2026-09-04T11:14:42.414Z",
+    "updateAt": "2026-09-04T11:14:42.414Z"
+  },
+  {
+    "id": 4,
+    "description": "Buy groceries",
+    "state": "todo",
+    "createdAt": "2026-09-04T11:16:17.985Z",
+    "updateAt": "2026-09-04T11:16:17.985Z"
+  },
+  {
+    "id": 5,
+    "description": "Buy groceries",
+    "state": "todo",
+    "createdAt": "2026-09-04T11:29:09.101Z",
+    "updateAt": "2026-09-04T11:29:09.101Z"
+  },
+  {
+    "id": 6,
+    "description": "Buy groceries",
+    "state": "todo",
+    "createdAt": "2026-09-04T11:29:28.842Z",
+    "updateAt": "2026-09-04T11:29:28.842Z"
+  }
+]
