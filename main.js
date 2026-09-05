@@ -174,7 +174,7 @@ function markTask(id,mark) {
 	}
 }
 
-markTask(2,"mark-done");
+//markTask(2,"mark-done");
 
 function listTask(){
 	for(let i=0; i < Tasks.length; i++){
@@ -185,6 +185,18 @@ function listTask(){
 //listTask();
 
 function listTaskmark(mark){
+	// we ensure that mark has the right syntax
+	switch(mark) {
+		case "in-progress":
+			break;
+		case "done":
+			break;
+		case "todo":
+			break;
+		default:
+			throw new Error("Wrong status for the task");
+	}
+
 	for(let i=0; i < Tasks.length; i++){
 		if( Tasks[i].state == mark){
 			console.log(Tasks[i]);
@@ -192,4 +204,100 @@ function listTaskmark(mark){
 	}
 }
 
-listTaskmark("done");
+//listTaskmark("done");
+const readline = require("node:readline");
+
+function askQuestion(question) {
+	return new Promise((resolve) => {
+		const rl = readline.createInterface({
+			input: process.stdin,
+			output: process.stdout,
+		});
+
+		rl.question(question, (answer) => {
+			rl.close();
+			resolve(answer.trim());
+		});
+	});
+}
+function main() {
+	// there's something to do with the parsing
+	let choose;
+	let parsechoose;
+	const readline = require('node:readline');
+
+	const rl = readline.createInterface({
+  		input: process.stdin,
+  		output: process.stdout,
+	});
+
+	rl.question(`> `, choose => {
+  		parsechoose = choose.split(" ");
+		rl.close();
+
+	switch(parsechoose[0]) {
+		case "add":
+			if (parsechoose.length != 2){
+				throw new Error ("Wrong input, must use\n$ add 'task description'");
+			}
+			
+			addTask(parsechoose[1]);
+		break;
+		case "update":
+			if(parsechoose.length != 3){
+				throw new Error ("Wrong input, must use\n$ update {id} 'task description'");
+			} 
+				
+			updateTask(Number(parsechoose[1]),parsechoose[2]);
+		break;
+		case "delete":
+			if(parsechoose.length != 2){
+				throw new Error ("Wrong input, must use\n$ delete {id}");
+			}
+
+			deleteTask(Number(parsechoose[1]));
+		break;
+		case "mark-in-progress":
+			if(parsechoose.length != 2) {
+				throw new Error ("Wrong input, must use\n$ mark-in-progress {id}");
+			}
+			markTask(Number(parsechoose[1]),parsechoose[0]);
+		break;
+		case "mark-done":
+			if(parsechoose.length != 2) {
+				throw new Error ("Wrong input, must use\n$ mark-done {id}");
+			}
+			markTask(Number(parsechoose[1]),parsechoose[0]);
+		break;
+		case "mark-todo":
+			if(parsechoose.length != 2) {
+				throw new Error ("Wrong input, must use\n$ mark-todo {id}");
+			}
+			markTask(Number(parsechoose[1]),parsechoose[0]);
+		break;
+		case "list":
+			if(parsechoose.length < 0 || parsechoose.length > 2){
+				throw new Error ("Wrong input, must use\n# Listing all tasks :\n$ list\n# Listing tasks by status\n$ list done\n$ list todo\n$ list in-progress");
+			}
+			if(parsechoose.length == 1){
+				listTask();
+			}		
+			if(parsechoose.length == 2){
+				listTaskmark(parsechoose[1]);				
+			}
+		default:
+			console.log(
+				"Commandes disponibles : add, update, delete, mark-in-progress, mark-done, mark-todo, list, list done, list todo, list in-progress"
+			);
+			
+	}
+	});
+}
+
+
+try {
+	main();
+
+} catch( err) {
+	console.error('Error syntax :', err);
+}
