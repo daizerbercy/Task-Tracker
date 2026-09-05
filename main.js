@@ -39,7 +39,7 @@ function addTask(descr) {
 	}
 }
 
-addTask("Buy groceries");
+//addTask("Buy groceries");
 
 // now I want that the creation date stay fixe and that the update date do nearly the same
 // This problem will be resolve by the json file.
@@ -123,7 +123,7 @@ function deleteTask(id) {
 	}
 }
 
-deleteTask(3);
+//deleteTask(3);
 
 function markTask(id,mark) {
 	if(Tasks.length === 0){
@@ -174,4 +174,22 @@ function markTask(id,mark) {
 	}
 }
 
-markTask(2,"mark-in-progress");
+markTask(2,"mark-done");
+
+function listTask(){
+	for(let i=0; i < Tasks.length; i++){
+		console.log(Tasks[i]);
+	}
+}
+
+//listTask();
+
+function listTaskmark(mark){
+	for(let i=0; i < Tasks.length; i++){
+		if( Tasks[i].state == mark){
+			console.log(Tasks[i]);
+		}
+	}
+}
+
+listTaskmark("done");
