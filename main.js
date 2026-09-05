@@ -25,9 +25,9 @@ if (!Array.isArray(Tasks)){
 
 
 function addTask(descr) {
-	
-	lastID = Tasks[Tasks.length -1].id;
-	const newtask = new Task(LastID + 1, descr, "todo", new Date(),new Date());
+	// we make sure he have the right ID	
+	const lastID = Tasks[Tasks.length - 1].id;
+	const newtask = new Task(lastID + 1, descr, "todo", new Date(),new Date());
 	
 	try {
 		Tasks.push(newtask); //we add the new task in the table
@@ -53,7 +53,14 @@ function updateTask(id, descr) {
     		throw new Error("The task ID must be a positive integer");
   	}
 	
-	const position = id - 1;
+//	const position = id - 1;
+	let position;
+	
+	for(let i=0; i< Tasks.length; i++){
+		if (Tasks[i].id == id){
+			position = i;
+		}
+	}
 
 	if(!Tasks[position]){
 		throw new Error("This ID doesn't exist");
@@ -88,6 +95,14 @@ function deleteTask(id) {
 	
 	//const position = id - 1;
 	// find another way to get the position
+	let position;
+	
+	for(let i=0; i< Tasks.length; i++){
+		if (Tasks[i].id == id){
+			position = i;
+		}
+	}
+
 	if(!Tasks[position]){
 		throw new Error("This ID doesn't exist");
 	}
@@ -118,8 +133,15 @@ function markTask(id,mark) {
 	  if (!Number.isInteger(id) || id <= 0) {
     		throw new Error("The task ID must be a positive integer");
   	}
+	let position;
 	
-	const position = id - 1;
+	for(let i=0; i< Tasks.length; i++){
+		if (Tasks[i].id == id){
+			position = i;
+		}
+	}
+
+//	const position = id - 1;
 
 	if(!Tasks[position]){
 		throw new Error("This ID doesn't exist");
