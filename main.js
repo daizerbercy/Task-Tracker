@@ -1,5 +1,7 @@
 // import file system (fs) for node.js
 const fs = require('fs');
+// import readline for input and output on node.js
+const readline = require("node:readline");
 
 //I view a task as an object
 function Task(identify,desc, statement, creation_date, lastupdate_date){
@@ -26,7 +28,12 @@ if (!Array.isArray(Tasks)){
 
 function addTask(descr) {
 	// we make sure he have the right ID	
-	const lastID = Tasks[Tasks.length - 1].id;
+	
+	let lastID = 0;
+	if( Tasks.length > 0){	
+		lastID = Tasks[Tasks.length - 1].id;
+	}
+	
 	const newtask = new Task(lastID + 1, descr, "todo", new Date(),new Date());
 	
 	try {
@@ -39,7 +46,6 @@ function addTask(descr) {
 	}
 }
 
-//addTask("Buy groceries");
 
 // now I want that the creation date stay fixe and that the update date do nearly the same
 // This problem will be resolve by the json file.
@@ -123,8 +129,7 @@ function deleteTask(id) {
 	}
 }
 
-//deleteTask(3);
-
+// modification a faire ici
 function markTask(id,mark) {
 	if(Tasks.length === 0){
 		throw new Error("There are no tasks created");
@@ -174,15 +179,13 @@ function markTask(id,mark) {
 	}
 }
 
-//markTask(2,"mark-done");
-
+// Surement à revoir
 function listTask(){
 	for(let i=0; i < Tasks.length; i++){
 		console.log(Tasks[i]);
 	}
 }
 
-//listTask();
 
 function listTaskmark(mark){
 	// we ensure that mark has the right syntax
@@ -204,100 +207,133 @@ function listTaskmark(mark){
 	}
 }
 
-//listTaskmark("done");
-const readline = require("node:readline");
 
-function askQuestion(question) {
-	return new Promise((resolve) => {
-		const rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-		});
+// Function for the parsing and syntax error management
+function parsecommande(input){
+	// add "description"
+	let match = input.match(/^\s*add\s+"([^"]+)"\s*$/);
+		
+	if(match) {
+		return ["add", match[1]];
+	}
 
-		rl.question(question, (answer) => {
-			rl.close();
-			resolve(answer.trim());
-		});
-	});
+	// update id "description"
+	match = input.match(/^\s*update\s+(\d+)\s+"([^"]+)"\s*$/);
+	
+	if(match) {
+		return ["update", Number(match[1]), match[2]];
+	}
+		
+	// delete id
+	match = input.match(/^\s*delete\s+(\d+)\s*$/);
+
+	if(match) {
+		return ["delete", Number(match[1])];
+	}
+
+	// mark-in-progress id
+	match = input.match(/^\s*mark-in-progress\s+(\d+)\s*$/);
+		
+	if(match) {
+		return ["mark-in-progress", Number(match[1])];
+	}
+		
+	// mark-done id
+	match = input.match(/^\s*mark-done\s+(\d+)\s*$/);
+
+	if(match) {
+		return ["mark-done", Number(match[1])];
+	}
+
+	// mark-todo id
+	match = input.match(/^\s*mark-todo\s+(\d+)\s*$/);
+
+	if(match) {
+		return ["mark-todo", Number(match[1])];
+	}
+
+	// list or list status
+	match = input.match(/^\s*list(?:\s+(done|todo|in-progress))?\s*$/);
+	if(match) {
+		return ["list", match[1] || "all"];
+	}
+
+		
+	throw new Error(
+    		"Format invalide.\n" +
+      		"Utilisation :\n" +
+      		'  add "task description"\n' +
+    		'  update {id} "task description"\n' +
+      		"  delete {id}\n" +
+      		"  mark-in-progress {id}\n" +
+      		"  mark-done {id}\n" +
+		"  mark-todo {id}\n" +
+      		"  list\n" +
+      		"  list done\n" +
+      		"  list todo\n" +
+      		"  list in-progress"
+  	);
 }
-function main() {
-	// there's something to do with the parsing
-	let choose;
-	let parsechoose;
-	const readline = require('node:readline');
 
+
+function main() {
 	const rl = readline.createInterface({
   		input: process.stdin,
   		output: process.stdout,
 	});
 
-	rl.question(`> `, choose => {
-  		parsechoose = choose.split(" ");
-		rl.close();
-
-	switch(parsechoose[0]) {
-		case "add":
-			if (parsechoose.length != 2){
-				throw new Error ("Wrong input, must use\n$ add 'task description'");
-			}
-			
-			addTask(parsechoose[1]);
-		break;
-		case "update":
-			if(parsechoose.length != 3){
-				throw new Error ("Wrong input, must use\n$ update {id} 'task description'");
-			} 
+	rl.question(`> `, input => {
+		try {
+  			const command = parsecommande(input);
+			console.log(command); // debugging
+	
+			switch(command[0]) {
+				case "add": 
+				addTask(command[1]);
+				break;
+		
+				case "update":
+				updateTask(command[1],command[2]);
+				break;
+		
+				case "delete":
+				deleteTask(command[1]);
+				break;
+		
+				/*case "mark-in-progress":
+				markTask(Number([1]),parsechoose[0]);
+				break;
+		
+				case "mark-done":
+				markTask(Number(parsechoose[1]),parsechoose[0]);
+				break;
+	
+				case "mark-todo":
+				markTask(Number(parsechoose[1]),parsechoose[0]);
+				break;
+		
+				case "list":
+				listTaskmark(parsechoose[1]);
+				break;*/
 				
-			updateTask(Number(parsechoose[1]),parsechoose[2]);
-		break;
-		case "delete":
-			if(parsechoose.length != 2){
-				throw new Error ("Wrong input, must use\n$ delete {id}");
-			}
+				case "help":
+				console.log(
+'# Adding a new task\ntask-cli add "Buy groceries"\n# Output: Task added successfully (ID: 1)\n\n# Updating and deleting tasks\ntask-cli update 1 "Buy groceries and cook dinner"\ntask-cli delete 1\n\n# Marking a task as in progress or done\ntask-cli mark-in-progress 1\ntask-cli mark-done 1\n\n# Listing all tasks\ntask-cli list\n\n# Listing tasks by status\ntask-cli list done\ntask-cli list todo\ntask-cli list in-progress'
+				);
+				break;
 
-			deleteTask(Number(parsechoose[1]));
-		break;
-		case "mark-in-progress":
-			if(parsechoose.length != 2) {
-				throw new Error ("Wrong input, must use\n$ mark-in-progress {id}");
-			}
-			markTask(Number(parsechoose[1]),parsechoose[0]);
-		break;
-		case "mark-done":
-			if(parsechoose.length != 2) {
-				throw new Error ("Wrong input, must use\n$ mark-done {id}");
-			}
-			markTask(Number(parsechoose[1]),parsechoose[0]);
-		break;
-		case "mark-todo":
-			if(parsechoose.length != 2) {
-				throw new Error ("Wrong input, must use\n$ mark-todo {id}");
-			}
-			markTask(Number(parsechoose[1]),parsechoose[0]);
-		break;
-		case "list":
-			if(parsechoose.length < 0 || parsechoose.length > 2){
-				throw new Error ("Wrong input, must use\n# Listing all tasks :\n$ list\n# Listing tasks by status\n$ list done\n$ list todo\n$ list in-progress");
-			}
-			if(parsechoose.length == 1){
-				listTask();
-			}		
-			if(parsechoose.length == 2){
-				listTaskmark(parsechoose[1]);				
-			}
-		default:
-			console.log(
+				default:
+				console.log(
 				"Commandes disponibles : add, update, delete, mark-in-progress, mark-done, mark-todo, list, list done, list todo, list in-progress"
-			);
+				);
 			
-	}
+			}
+		} catch (err) {
+			console.error(err.message);
+		} finally {
+			rl.close();
+		}
 	});
 }
 
-
-try {
-	main();
-
-} catch( err) {
-	console.error('Error syntax :', err);
-}
+main();

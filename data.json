@@ -1,44 +1,30 @@
 [
   {
     "id": 1,
-    "description": "Buy groceries",
+    "description": "read a book",
     "state": "todo",
-    "createdAt": "2026-09-04T09:44:20.863Z",
-    "updateAt": "2026-09-04T09:44:20.863Z"
+    "createdAt": "2026-09-07T08:02:52.582Z",
+    "updateAt": "2026-09-07T08:02:52.582Z"
   },
   {
     "id": 2,
-    "description": "Cook dinner",
-    "state": "in-progress",
-    "createdAt": "2026-09-04T10:00:32.067Z",
-    "updateAt": "2026-09-04T10:01:37.200Z"
+    "description": "Watch an english tv show",
+    "state": "todo",
+    "createdAt": "2026-09-07T08:03:31.705Z",
+    "updateAt": "2026-09-07T08:03:31.705Z"
   },
   {
     "id": 3,
-    "description": "Buy groceries",
+    "description": "go to the gym",
     "state": "todo",
-    "createdAt": "2026-09-04T11:14:42.414Z",
-    "updateAt": "2026-09-04T11:14:42.414Z"
+    "createdAt": "2026-09-07T08:03:38.921Z",
+    "updateAt": "2026-09-07T08:03:38.921Z"
   },
   {
     "id": 4,
-    "description": "Buy groceries",
+    "description": "work on your programming project",
     "state": "todo",
-    "createdAt": "2026-09-04T11:16:17.985Z",
-    "updateAt": "2026-09-04T11:16:17.985Z"
-  },
-  {
-    "id": 5,
-    "description": "Buy groceries",
-    "state": "todo",
-    "createdAt": "2026-09-04T11:29:09.101Z",
-    "updateAt": "2026-09-04T11:29:09.101Z"
-  },
-  {
-    "id": 6,
-    "description": "Buy groceries",
-    "state": "todo",
-    "createdAt": "2026-09-04T11:29:28.842Z",
-    "updateAt": "2026-09-04T11:29:28.842Z"
+    "createdAt": "2026-09-07T08:04:03.643Z",
+    "updateAt": "2026-09-07T08:05:14.508Z"
   }
 ]
