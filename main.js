@@ -11,7 +11,6 @@ function Task(identify,desc, statement, creation_date, lastupdate_date){
 	this.createdAt = creation_date;
 	this.updateAt = lastupdate_date;
 } 
-// il faut revoir la recuperation de la position via l'ID après suppression
 // We need a list to manage the task.
 // we charge the data.json store inside
 let Tasks = [];
@@ -51,9 +50,6 @@ function addTask(descr) {
 // This problem will be resolve by the json file.
 
 function updateTask(id, descr) {
-	if(Tasks.length === 0){
-		throw new Error("There are no tasks created");
-	}
 
 	  if (!Number.isInteger(id) || id <= 0) {
     		throw new Error("The task ID must be a positive integer");
@@ -85,15 +81,10 @@ function updateTask(id, descr) {
 		
 }
 
-// must be call with a try catch statement to avoid the complet errorœ
-//updateTask(50, "Cook dinner");
 
 // now I want to delete a Task
 
 function deleteTask(id) {
-	if(Tasks.length === 0){
-		throw new Error("There are no tasks created");
-	}
 
 	  if (!Number.isInteger(id) || id <= 0) {
     		throw new Error("The task ID must be a positive integer");
@@ -114,11 +105,6 @@ function deleteTask(id) {
 	}
 
 	Tasks.splice(position,1); // delete an element in a table
-	
-	/* function update the id in the files json to avoid problem
-	for(let i=0; i< Tasks.length; i++){
-		Tasks[i].id = i+1;
-	}*/
 
 	try {
 		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
@@ -129,13 +115,10 @@ function deleteTask(id) {
 	}
 }
 
-// modification a faire ici
-function markTask(id,mark) {
-	if(Tasks.length === 0){
-		throw new Error("There are no tasks created");
-	}
 
-	  if (!Number.isInteger(id) || id <= 0) {
+function markprogress(id) {
+
+	if (!Number.isInteger(id) || id <= 0) {
     		throw new Error("The task ID must be a positive integer");
   	}
 	let position;
@@ -146,62 +129,90 @@ function markTask(id,mark) {
 		}
 	}
 
-//	const position = id - 1;
 
 	if(!Tasks[position]){
 		throw new Error("This ID doesn't exist");
 	}
-	
-	/*if (mark != "mark-in-progress" && mark != "mark-done" && mark != "mark-todo"){
-		throw new Error("Wrong status for marking tasks");
-	}*/
 
-	switch(mark) {
-		case "mark-in-progress":
-			Tasks[position].state = "in-progress";
-			break;
-		case "mark-done":
-			Tasks[position].state = "done";
-			break;
-		case "mark-todo":
-			Tasks[position].state = "todo";
-			break;
-		default:
-			throw new Error("Wrong status for marking tasks");
-	}
+	Tasks[position].state = "in-progress";
 
 	try {
 		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
 		
-		console.log("Task mark "+ Tasks[position].state +" Successfully (ID: " + id + ")");
+		console.log("Task mark in-progress Successfully (ID: " + id + ")");
 	} catch (err) {
 		console.error('Error writing files:', err);
 	}
 }
 
-// Surement à revoir
-function listTask(){
-	for(let i=0; i < Tasks.length; i++){
-		console.log(Tasks[i]);
+function markdone(id) {
+
+	if (!Number.isInteger(id) || id <= 0) {
+    		throw new Error("The task ID must be a positive integer");
+  	}
+	let position;
+	
+	for(let i=0; i< Tasks.length; i++){
+		if (Tasks[i].id == id){
+			position = i;
+		}
+	}
+
+
+	if(!Tasks[position]){
+		throw new Error("This ID doesn't exist");
+	}
+
+	Tasks[position].state = "done";
+
+	try {
+		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
+		
+		console.log("Task mark done Successfully (ID: " + id + ")");
+	} catch (err) {
+		console.error('Error writing files:', err);
+	}
+}
+
+function marktodo(id) {
+
+	if (!Number.isInteger(id) || id <= 0) {
+    		throw new Error("The task ID must be a positive integer");
+  	}
+	let position;
+	
+	for(let i=0; i< Tasks.length; i++){
+		if (Tasks[i].id == id){
+			position = i;
+		}
+	}
+
+
+	if(!Tasks[position]){
+		throw new Error("This ID doesn't exist");
+	}
+
+	Tasks[position].state = "todo";
+
+	try {
+		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
+		
+		console.log("Task mark todo Successfully (ID: " + id + ")");
+	} catch (err) {
+		console.error('Error writing files:', err);
 	}
 }
 
 
-function listTaskmark(mark){
-	// we ensure that mark has the right syntax
-	switch(mark) {
-		case "in-progress":
-			break;
-		case "done":
-			break;
-		case "todo":
-			break;
-		default:
-			throw new Error("Wrong status for the task");
-	}
-
-	for(let i=0; i < Tasks.length; i++){
-		if( Tasks[i].state == mark){
+function listTask(mark){
+	if (mark === "todo" || mark === "in-progress" || mark === "done") {
+		for(let i=0; i < Tasks.length; i++){
+			if( Tasks[i].state == mark){
+				console.log(Tasks[i]);
+			}
+		}
+	} else {
+		for(let i=0; i < Tasks.length; i++){
 			console.log(Tasks[i]);
 		}
 	}
@@ -258,20 +269,14 @@ function parsecommande(input){
 		return ["list", match[1] || "all"];
 	}
 
+	match = input.match(/^\s*help\s*$/);
+
+	if (match) {
+		return ["help"];
+	}
 		
 	throw new Error(
-    		"Format invalide.\n" +
-      		"Utilisation :\n" +
-      		'  add "task description"\n' +
-    		'  update {id} "task description"\n' +
-      		"  delete {id}\n" +
-      		"  mark-in-progress {id}\n" +
-      		"  mark-done {id}\n" +
-		"  mark-todo {id}\n" +
-      		"  list\n" +
-      		"  list done\n" +
-      		"  list todo\n" +
-      		"  list in-progress"
+		"Unknown command. Type help to see the available commands."
   	);
 }
 
@@ -280,11 +285,33 @@ function main() {
 	const rl = readline.createInterface({
   		input: process.stdin,
   		output: process.stdout,
+		prompt: "> ",
 	});
+	
+	console.log('Type "help" to display the available commands.');
 
-	rl.question(`> `, input => {
+	console.log('Type "exit" to quit.');
+
+  	rl.prompt();
+	
+	rl.on("line", input => {
+		const commandInput = input.trim();
+
+		// Leave the program
+		if (commandInput === "exit"){
+			console.log("Goodbye!");
+			rl.close();
+			return;
+		}
+
+		// Ignore empty line
+		if (commandInput === "") {
+      			rl.prompt();
+      			return;
+    		}		
+
 		try {
-  			const command = parsecommande(input);
+  			const command = parsecommande(commandInput);
 			console.log(command); // debugging
 	
 			switch(command[0]) {
@@ -300,39 +327,49 @@ function main() {
 				deleteTask(command[1]);
 				break;
 		
-				/*case "mark-in-progress":
-				markTask(Number([1]),parsechoose[0]);
+				case "mark-in-progress":
+				markprogress(command[1]);
 				break;
 		
 				case "mark-done":
-				markTask(Number(parsechoose[1]),parsechoose[0]);
+				markdone(command[1]);
 				break;
 	
 				case "mark-todo":
-				markTask(Number(parsechoose[1]),parsechoose[0]);
+				marktodo(command[1]);
 				break;
 		
 				case "list":
-				listTaskmark(parsechoose[1]);
-				break;*/
+				listTask(command[1]);
+				break;
 				
 				case "help":
 				console.log(
-'# Adding a new task\ntask-cli add "Buy groceries"\n# Output: Task added successfully (ID: 1)\n\n# Updating and deleting tasks\ntask-cli update 1 "Buy groceries and cook dinner"\ntask-cli delete 1\n\n# Marking a task as in progress or done\ntask-cli mark-in-progress 1\ntask-cli mark-done 1\n\n# Listing all tasks\ntask-cli list\n\n# Listing tasks by status\ntask-cli list done\ntask-cli list todo\ntask-cli list in-progress'
+					'Available commands :\n' +
+            				'  add "description"\n' +
+            				'  update {id} "description"\n' +
+            				'  delete {id}\n' +
+            				'  mark-in-progress {id}\n' +
+            				'  mark-done {id}\n' +
+            				'  mark-todo {id}\n' +
+            				'  list\n' +
+            				'  list done\n' +
+            				'  list todo\n' +
+            				'  list in-progress\n' +
+            				'  help\n' +
+            				'  exit'
 				);
 				break;
-
-				default:
-				console.log(
-				"Commandes disponibles : add, update, delete, mark-in-progress, mark-done, mark-todo, list, list done, list todo, list in-progress"
-				);
-			
 			}
 		} catch (err) {
 			console.error(err.message);
-		} finally {
-			rl.close();
 		}
+		
+		rl.prompt();
+	});
+
+	rl.on("close", () => {
+		console.log("Program terminated.");
 	});
 }
 
