@@ -33,7 +33,11 @@ function addTask(descr) {
 		lastID = Tasks[Tasks.length - 1].id;
 	}
 	
-	const newtask = new Task(lastID + 1, descr, "todo", new Date(),new Date());
+	const date = new Date();
+		
+	const formatdate = date.toLocaleString();	
+	
+	const newtask = new Task(lastID + 1, descr, "todo", formatdate, formatdate);
 	
 	try {
 		Tasks.push(newtask); //we add the new task in the table
@@ -67,9 +71,12 @@ function updateTask(id, descr) {
 	if(!Tasks[position]){
 		throw new Error("This ID doesn't exist");
 	}
+
+	const date = new Date();
+	const formatdate = date.toLocaleString();
 	
 	Tasks[position].description = descr;
-	Tasks[position].updateAt = new Date();
+	Tasks[position].updateAt = formatdate;
 	
 	try {
 		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
@@ -292,10 +299,11 @@ function main() {
 
 	console.log('Type "exit" to quit.');
 
-  	rl.prompt();
+  	rl.prompt(); // display the prompt
 	
+	// run this everytime I type return
 	rl.on("line", input => {
-		const commandInput = input.trim();
+		const commandInput = input.trim();// delete space at the beginning and the end
 
 		// Leave the program
 		if (commandInput === "exit"){
@@ -304,7 +312,7 @@ function main() {
 			return;
 		}
 
-		// Ignore empty line
+		// If the user type Enter without anything by error it's relaunsh the prompt command
 		if (commandInput === "") {
       			rl.prompt();
       			return;
