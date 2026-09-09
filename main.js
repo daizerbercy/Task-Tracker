@@ -1,6 +1,4 @@
-// import file system (fs) for node.js
 const fs = require('fs');
-// import readline for input and output on node.js
 const readline = require("node:readline");
 
 //I view a task as an object
@@ -11,23 +9,41 @@ function Task(identify,desc, statement, creation_date, lastupdate_date){
 	this.createdAt = creation_date;
 	this.updateAt = lastupdate_date;
 } 
-// We need a list to manage the task.
-// we charge the data.json store inside
+
+// we'll charge the data.json content inside to manage the tasks
 let Tasks = [];
 
 if(fs.existsSync("data.json")){
 	Tasks = JSON.parse(fs.readFileSync("data.json", "utf8"));
 }
 
-// we make sure that Tasks is an array here
 if (!Array.isArray(Tasks)){
 	throw new Error("the JSON file must contains an array.");
 }
 
+// Arrays for autocomplete
+const commands = [
+	"add",
+	"update",
+	"delete",
+	"mark-in-progress",
+	"mark-todo",
+	"mark-done",
+	"list",
+	"help",
+	"exit",
+];
+
+const liststatus = [
+	"done",
+	"todo",
+	"in-progress",
+];
+ 
 
 function addTask(descr) {
-	// we make sure he have the right ID	
 	
+	// we check the ID	
 	let lastID = 0;
 	if( Tasks.length > 0){	
 		lastID = Tasks[Tasks.length - 1].id;
@@ -50,16 +66,13 @@ function addTask(descr) {
 }
 
 
-// now I want that the creation date stay fixe and that the update date do nearly the same
-// This problem will be resolve by the json file.
-
 function updateTask(id, descr) {
 
 	  if (!Number.isInteger(id) || id <= 0) {
     		throw new Error("The task ID must be a positive integer");
   	}
-	
-//	const position = id - 1;
+
+	// Get the position from the ID	
 	let position;
 	
 	for(let i=0; i< Tasks.length; i++){
@@ -89,7 +102,6 @@ function updateTask(id, descr) {
 }
 
 
-// now I want to delete a Task
 
 function deleteTask(id) {
 
@@ -97,8 +109,6 @@ function deleteTask(id) {
     		throw new Error("The task ID must be a positive integer");
   	}
 	
-	//const position = id - 1;
-	// find another way to get the position
 	let position;
 	
 	for(let i=0; i< Tasks.length; i++){
@@ -225,8 +235,32 @@ function listTask(mark){
 	}
 }
 
+// function for autocomplete
+function autocomplete(line){
+	const input = line.trimStart(); // remove whitespace form beginning
+	// Only autocomplete the main command before the user types an argument
+	if(!input.includes(" ")){
+		const matches = commands.filter(command => command.startsWith(input));
 
-// Function for the parsing and syntax error management
+		return [input.length > 0 ? matches : commands, line]; 
+	}
+	// (/S*) capture zero or more non-whitespace characters in listmathch[1]
+	const listmatch = input.match(/^\s*list\s+(\S*)$/);
+	
+	if(listmatch) {
+		const partialstatus = listmatch[1];
+	
+		const matches = liststatus
+			.filter( command => command.startsWith(partialstatus))
+			.map( command => `list ${command}`);
+
+		return [matches, line];
+	}
+
+	return [[],line];
+}
+
+// function for the parsing and syntax error management
 function parsecommande(input){
 	// add "description"
 	let match = input.match(/^\s*add\s+"([^"]+)"\s*$/);
@@ -275,7 +309,8 @@ function parsecommande(input){
 	if(match) {
 		return ["list", match[1] || "all"];
 	}
-
+	
+	// help
 	match = input.match(/^\s*help\s*$/);
 
 	if (match) {
@@ -293,6 +328,7 @@ function main() {
   		input: process.stdin,
   		output: process.stdout,
 		prompt: "> ",
+		completer: autocomplete,
 	});
 	
 	console.log('Type "help" to display the available commands.');
@@ -305,14 +341,14 @@ function main() {
 	rl.on("line", input => {
 		const commandInput = input.trim();// delete space at the beginning and the end
 
-		// Leave the program
+		// Leave the program if user type exit
 		if (commandInput === "exit"){
 			console.log("Goodbye!");
 			rl.close();
 			return;
 		}
 
-		// If the user type Enter without anything by error it's relaunsh the prompt command
+		// If the user accidentally presses Enter without typing anything, display the prompt again.
 		if (commandInput === "") {
       			rl.prompt();
       			return;
