@@ -39,7 +39,23 @@ const liststatus = [
 	"todo",
 	"in-progress",
 ];
+
  
+function findIndexById(id){
+	
+	if (!Number.isInteger(id) || id <= 0) {
+    		throw new Error("The task ID must be a positive integer");
+  	}
+	
+	const index = Tasks.findIndex(task => task.id === id);
+
+	if(!Tasks[index]) {
+		throw new Error(`Task with ID ${id} was not found.`);
+	}
+	
+	return index;
+}
+
 
 function addTask(descr) {
 	
@@ -68,22 +84,7 @@ function addTask(descr) {
 
 function updateTask(id, descr) {
 
-	  if (!Number.isInteger(id) || id <= 0) {
-    		throw new Error("The task ID must be a positive integer");
-  	}
-
-	// Get the position from the ID	
-	let position;
-	
-	for(let i=0; i< Tasks.length; i++){
-		if (Tasks[i].id == id){
-			position = i;
-		}
-	}
-
-	if(!Tasks[position]){
-		throw new Error("This ID doesn't exist");
-	}
+	const position = findIndexById(id);
 
 	const date = new Date();
 	const formatdate = date.toLocaleString();
@@ -105,21 +106,7 @@ function updateTask(id, descr) {
 
 function deleteTask(id) {
 
-	  if (!Number.isInteger(id) || id <= 0) {
-    		throw new Error("The task ID must be a positive integer");
-  	}
-	
-	let position;
-	
-	for(let i=0; i< Tasks.length; i++){
-		if (Tasks[i].id == id){
-			position = i;
-		}
-	}
-
-	if(!Tasks[position]){
-		throw new Error("This ID doesn't exist");
-	}
+	const position = findIndexById(id);
 
 	Tasks.splice(position,1); // delete an element in a table
 
@@ -135,21 +122,7 @@ function deleteTask(id) {
 
 function markprogress(id) {
 
-	if (!Number.isInteger(id) || id <= 0) {
-    		throw new Error("The task ID must be a positive integer");
-  	}
-	let position;
-	
-	for(let i=0; i< Tasks.length; i++){
-		if (Tasks[i].id == id){
-			position = i;
-		}
-	}
-
-
-	if(!Tasks[position]){
-		throw new Error("This ID doesn't exist");
-	}
+	const position = findIndexById(id);
 
 	Tasks[position].state = "in-progress";
 
@@ -163,22 +136,8 @@ function markprogress(id) {
 }
 
 function markdone(id) {
-
-	if (!Number.isInteger(id) || id <= 0) {
-    		throw new Error("The task ID must be a positive integer");
-  	}
-	let position;
 	
-	for(let i=0; i< Tasks.length; i++){
-		if (Tasks[i].id == id){
-			position = i;
-		}
-	}
-
-
-	if(!Tasks[position]){
-		throw new Error("This ID doesn't exist");
-	}
+	const position = findIndexById(id);
 
 	Tasks[position].state = "done";
 
@@ -193,21 +152,7 @@ function markdone(id) {
 
 function marktodo(id) {
 
-	if (!Number.isInteger(id) || id <= 0) {
-    		throw new Error("The task ID must be a positive integer");
-  	}
-	let position;
-	
-	for(let i=0; i< Tasks.length; i++){
-		if (Tasks[i].id == id){
-			position = i;
-		}
-	}
-
-
-	if(!Tasks[position]){
-		throw new Error("This ID doesn't exist");
-	}
+	const position = findIndexById(id);
 
 	Tasks[position].state = "todo";
 
