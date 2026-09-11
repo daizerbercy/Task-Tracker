@@ -56,6 +56,14 @@ function findIndexById(id){
 	return index;
 }
 
+// save the task in the file data.json
+function saveTasks() {
+	try {
+		fs.writeFileSync("data.json", JSON.stringify(Tasks, null, 2), "utf8");
+	} catch (err) {
+		console.error('Error writing files:', err);
+	}
+}
 
 function addTask(descr) {
 	
@@ -71,14 +79,11 @@ function addTask(descr) {
 	
 	const newtask = new Task(lastID + 1, descr, "todo", formatdate, formatdate);
 	
-	try {
-		Tasks.push(newtask); //we add the new task in the table
-		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8"); // we update the data.json file
+	Tasks.push(newtask); //we add the new task in the table
 
-		console.log("Task added successfully (ID: " + newtask.id + ")");
-	} catch (err) {
-		console.error('Error writing files:', err);
-	}
+	saveTasks();
+
+	console.log("Task added successfully (ID: " + newtask.id + ")");
 }
 
 
@@ -91,14 +96,10 @@ function updateTask(id, descr) {
 	
 	Tasks[position].description = descr;
 	Tasks[position].updateAt = formatdate;
-	
-	try {
-		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
+
+	saveTasks();
 		
-		console.log("Task updated Successfully (ID: " + id + ")");
-	} catch (err) {
-		console.error('Error writing files:', err);
-	}
+	console.log("Task updated Successfully (ID: " + id + ")");
 		
 }
 
@@ -109,14 +110,10 @@ function deleteTask(id) {
 	const position = findIndexById(id);
 
 	Tasks.splice(position,1); // delete an element in a table
-
-	try {
-		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
-		
-		console.log("Task deleted Successfully (ID: " + id + ")");
-	} catch (err) {
-		console.error('Error writing files:', err);
-	}
+	
+	saveTasks();
+	
+	console.log("Task deleted Successfully (ID: " + id + ")");
 }
 
 
@@ -125,14 +122,10 @@ function markprogress(id) {
 	const position = findIndexById(id);
 
 	Tasks[position].state = "in-progress";
-
-	try {
-		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
-		
-		console.log("Task mark in-progress Successfully (ID: " + id + ")");
-	} catch (err) {
-		console.error('Error writing files:', err);
-	}
+	
+	saveTasks();
+	
+	console.log("Task mark in-progress Successfully (ID: " + id + ")");
 }
 
 function markdone(id) {
@@ -140,14 +133,10 @@ function markdone(id) {
 	const position = findIndexById(id);
 
 	Tasks[position].state = "done";
-
-	try {
-		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
+	
+	saveTasks();
 		
-		console.log("Task mark done Successfully (ID: " + id + ")");
-	} catch (err) {
-		console.error('Error writing files:', err);
-	}
+	console.log("Task mark done Successfully (ID: " + id + ")");
 }
 
 function marktodo(id) {
@@ -155,14 +144,10 @@ function marktodo(id) {
 	const position = findIndexById(id);
 
 	Tasks[position].state = "todo";
-
-	try {
-		fs.writeFileSync("data.json",JSON.stringify(Tasks, null, 2), "utf8");
-		
-		console.log("Task mark todo Successfully (ID: " + id + ")");
-	} catch (err) {
-		console.error('Error writing files:', err);
-	}
+	
+	saveTasks();
+	
+	console.log("Task mark todo Successfully (ID: " + id + ")");
 }
 
 
