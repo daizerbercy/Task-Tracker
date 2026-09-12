@@ -46,7 +46,7 @@ export function updateTask(id, descr) {
 	const formatdate = date.toLocaleString();
 	
 	Tasks[position].description = descr;
-	Tasks[position].updateAt = formatdate;
+	Tasks[position].updatedAt = formatdate;
 
 	saveTasks(Tasks);
 	
