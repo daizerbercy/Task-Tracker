@@ -123,7 +123,7 @@ cd Task-Tracker
 ```
 No external dependencies are required if the project only uses built-in Node.js modules.
 
-## Running the Application
+## Running the Application
 
 Start the application with:
 ```bash
@@ -154,8 +154,8 @@ This project was created to practice:
 
 ## Future Improvements
 Possible improvements :
--[ ] Add autocompletion for task IDs
--[ ] Add confirmation before deleting a task
--[ ] Add search functionality
--[ ] improve error messages
--[ ] Add automated tests
+- [ ] Add autocompletion for task IDs
+- [ ] Add confirmation before deleting a task
+- [ ] Add search functionality
+- [ ] improve error messages
+- [ ] Add automated tests

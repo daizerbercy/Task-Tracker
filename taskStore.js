@@ -21,6 +21,6 @@ export function saveTasks(tasks) {
 	try {
 		fs.writeFileSync(filePath, JSON.stringify(tasks, null, 2), "utf8");
 	} catch (err) {
-		console.error('Error writing files:', err);
+		throw new Error(`Unable to save tasks: ${err.message}`);
 	}
 }

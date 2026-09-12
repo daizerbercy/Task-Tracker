@@ -36,7 +36,7 @@ function main() {
 
 		try {
   			const command = parsecommande(commandInput);
-			console.log(command); // debugging
+			//console.log(command); // debugging
 	
 			switch(command[0]) {
 				case "add": 

@@ -11,7 +11,7 @@ export function findIndexById(id){
 	
 	const index = Tasks.findIndex(task => task.id === id);
 
-	if(!Tasks[index]) {
+	if(index === -1) {
 		throw new Error(`Task with ID ${id} was not found.`);
 	}
 	
@@ -19,17 +19,12 @@ export function findIndexById(id){
 }
 
 export function addTask(descr) {
-	// we check the ID	
-	let lastID = 0;
-	if( Tasks.length > 0){	
-		lastID = Tasks[Tasks.length - 1].id;
-	}
+	// Find the highest task ID in the Tasks array
+	const lastID = Tasks.reduce((max, task) => Math.max(max, task.id),0);
 	
-	const date = new Date();
-		
-	const formatdate = date.toLocaleString();	
+	const datenow = new Date().toISOString();	
 	
-	const newtask = new Task(lastID + 1, descr, "todo", formatdate, formatdate);
+	const newtask = new Task(lastID + 1, descr, "todo", datenow, datenow);
 	
 	Tasks.push(newtask); //we add the new task in the table
 
